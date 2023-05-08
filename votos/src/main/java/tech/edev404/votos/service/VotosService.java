@@ -7,6 +7,7 @@ import tech.edev404.votos.model.Votacion;
 public interface VotosService {
 
     void registerVote(Candidato candidato, Aprendiz aprendiz, Votacion votacion);
-    boolean hasAlreadyVote(Aprendiz aprendiz, Votacion votacion);
+    Boolean hasAlreadyVote(String idAprendiz, Integer idVotacion);
+    void registerVote(Integer idCandidato, String idAprendiz, Integer idVotacion);
     
 }
