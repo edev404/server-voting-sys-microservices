@@ -18,6 +18,7 @@ import tech.fabricatic.votaciones.votos.service.VotosService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/votos")
+@SuppressWarnings("unused")
 public class VotosController {
 
     private final VotosService votosService;
