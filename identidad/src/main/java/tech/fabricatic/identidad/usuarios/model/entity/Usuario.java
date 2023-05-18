@@ -1,4 +1,4 @@
-package tech.fabricatic.identidad.usuarios.model;
+package tech.fabricatic.identidad.usuarios.model.entity;
 
 
 import java.time.LocalDateTime;
