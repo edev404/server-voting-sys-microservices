@@ -1,4 +1,4 @@
-package tech.fabricatic.identidad.model;
+package tech.fabricatic.identidad.usuarios.model;
 
 
 import java.time.LocalDateTime;
@@ -21,8 +21,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tech.fabricatic.identidad.model.details.Authority;
-import tech.fabricatic.identidad.model.details.UserType;
+import tech.fabricatic.identidad.usuarios.model.details.Authority;
+import tech.fabricatic.identidad.usuarios.model.details.UserType;
 
 @Data
 @Builder

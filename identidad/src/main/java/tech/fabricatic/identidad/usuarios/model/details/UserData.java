@@ -1,4 +1,4 @@
-package tech.fabricatic.identidad.model.details;
+package tech.fabricatic.identidad.usuarios.model.details;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -6,7 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import tech.fabricatic.identidad.model.Usuario;
+import tech.fabricatic.identidad.usuarios.model.Usuario;
 
 public class UserData {
 

@@ -1,4 +1,4 @@
-package tech.fabricatic.identidad.model.details;
+package tech.fabricatic.identidad.usuarios.model.details;
 
 public enum UserType {
     ADMINISTRADOR,

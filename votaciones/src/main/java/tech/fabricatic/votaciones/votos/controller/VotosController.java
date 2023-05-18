@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import tech.fabricatic.votaciones.candidatos.service.CandidatosService;
 import tech.fabricatic.votaciones.votaciones.service.VotacionesService;
 import tech.fabricatic.votaciones.votos.service.VotosService;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/votos")

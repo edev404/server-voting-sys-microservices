@@ -6,51 +6,121 @@ import java.util.Optional;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import tech.fabricatic.votaciones.votaciones.model.dto.VotacionDTO;
 import tech.fabricatic.votaciones.votaciones.model.entity.Votacion;
 import tech.fabricatic.votaciones.votaciones.model.enumerated.EstadoVotacion;
+import tech.fabricatic.votaciones.votaciones.repository.VotacionesRepository;
 
-public interface VotacionesService {
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class VotacionesService {
 
-    List<Votacion> getVotaciones();
+    private final VotacionesRepository votacionesRepository;
 
-    void addVotacion(Votacion votacion);
+    public List<Votacion> getVotaciones() {
+        return votacionesRepository.findAll();
+    }
 
-    void deleteById(Integer idVotacion);
+    public void addVotacion(Votacion votacion) {
+        votacionesRepository.save(votacion);
+    }
 
-    void deleteVotacion(Votacion votacion);
+    public void deleteById(Integer idVotacion) {
+        votacionesRepository.deleteById(idVotacion);
+    }
 
-    Page<Votacion> getVotacionesPaginate(Pageable paging);
+    public void deleteVotacion(Votacion votacion) {
+        votacionesRepository.delete(votacion);
+    }
 
-    Page<Votacion> getVotacionesPaginateByExample(Pageable paging, Example<Votacion> example);
+    public Page<Votacion> getVotacionesPaginate(Pageable paging) {
+        return votacionesRepository.findAll(paging);
+    }
 
-    Optional<Votacion> getVotacionById(Integer idVotacion);
+    public Page<Votacion> getVotacionesPaginateByExample(Pageable paging, Example<Votacion> example) {
+        return votacionesRepository.findAll(example, paging);
+    }
 
-    void disableVotacionById(Integer idVotacion);
+    public Optional<Votacion> getVotacionById(Integer idVotacion) {
+        return votacionesRepository.findById(idVotacion);
+    }
 
-    void enableVotacionById(Integer idVotacion);
+    public void disableVotacionById(Integer idVotacion) {
+        if(isThisCurrentVotacion(idVotacion)){
+            setNotCurrentVotacion(idVotacion);
+        }
+        votacionesRepository.disableVotacionById(idVotacion);
+    }
 
-    List<Votacion> getVotacionesByEstado(EstadoVotacion estado);
+    public void enableVotacionById(Integer idVotacion) {
+        votacionesRepository.enableVotacionById(idVotacion);
+    }
 
-    Boolean alreadyExist(VotacionDTO votacionDTO);
+    public List<Votacion> getVotacionesByEstado(EstadoVotacion estado) {
+        return votacionesRepository.findAll()
+                .stream()
+                .filter(votacion -> votacion.getEstado().equals(estado))
+                .toList();
+    }
 
-    Boolean alreadyExist(Integer idVotacion);
+    public Boolean alreadyExist(VotacionDTO votacionDTO) {
+        return votacionesRepository.findByNombreAndDescripcion(votacionDTO.getNombre(), votacionDTO.getDescripcion())
+                .isPresent();
+    }
 
-    Boolean isEnabled(Integer idVotacion);
+    public Boolean alreadyExist(Integer idVotacion) {
+        return votacionesRepository.findById(idVotacion).isPresent();
+    }
 
-    Boolean isDisabled(Integer idVotacion);
+    public Boolean isDisabled(Integer idVotacion) {
+        return votacionesRepository.findById(idVotacion).get().getEstado().equals(EstadoVotacion.INHABILITADA);
+    }
 
-    Optional<Votacion> getCurrentVotacion();
+    public Boolean isEnabled(Integer idVotacion) {
+        return votacionesRepository.findById(idVotacion).get().getEstado().equals(EstadoVotacion.HABILITADA);
+    }
 
-    Optional<Integer> getCurrentVotacionId();
+    public Optional<Votacion> getCurrentVotacion() {
+        return votacionesRepository.findByCurrentVotacion(true);
+    }
 
-    void setCurrentVotacion(Integer idVotacion);
+    public void setCurrentVotacion(Integer idVotacion) {
+        if (isAnyCurrentSelected()) {
+            Optional<Votacion> currentOptional = votacionesRepository.findByCurrentVotacion(true);
+            if (currentOptional.isPresent()) {
+                votacionesRepository.setNotCurrentById(currentOptional.get().getId());
+            }
+        }
+        votacionesRepository.setCurrentById(idVotacion);
+    }
 
-    void setNotCurrentVotacion(Integer idVotacion);
+    public Boolean isAnyCurrentSelected() {
+        return votacionesRepository.findByCurrentVotacion(true).isPresent();
+    }
 
-    Boolean isAnyCurrentSelected();
+    public Boolean isThisCurrentVotacion(Integer idVotacion) {
+        Optional<Votacion> optional = votacionesRepository.findByCurrentVotacion(true);
+        if (optional.isPresent()) {
+            return optional.get().getId() == idVotacion;
+        }
+        return false;
+    }
 
-    Boolean isThisCurrentVotacion(Integer idVotacion);
-    
+    public void setNotCurrentVotacion(Integer idVotacion) {
+        if (isThisCurrentVotacion(idVotacion)) {
+            votacionesRepository.setNotCurrentById(idVotacion);
+        }
+    }
+
+    public Optional<Integer> getCurrentVotacionId() {
+        Optional<Votacion> optional = getCurrentVotacion();
+        Integer idVotacion = optional.isPresent() ? optional.get().getId() : null;
+        return Optional.ofNullable(idVotacion);
+    }
+
 }

@@ -1,4 +1,4 @@
-package main.java.tech.fabricatic.identidad.centro.model.dto; 
+package tech.fabricatic.identidad.centro.model.dto; 
 
 public class CentroDTO {
     

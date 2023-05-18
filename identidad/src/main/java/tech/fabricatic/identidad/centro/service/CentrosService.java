@@ -1,4 +1,4 @@
-package main.java.tech.fabricatic.identidad.centro.service; 
+package tech.fabricatic.identidad.centro.service; 
 
 public class CentrosService {
     

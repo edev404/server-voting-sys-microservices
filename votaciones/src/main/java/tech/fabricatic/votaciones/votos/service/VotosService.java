@@ -1,8 +1,20 @@
 package tech.fabricatic.votaciones.votos.service;
 
-public interface VotosService {
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
-    Boolean hasAlreadyVote(String idAprendiz, Integer idVotacion);
-    void registerVote(Integer idCandidato, String idAprendiz, Integer idVotacion);
+
+
+@Service
+@Primary
+public class VotosService {
+
+    public Boolean hasAlreadyVote(String idAprendiz, Integer idVotacion) {
+        return true;
+    }
+
+    public void registerVote(Integer idCandidato, String idAprendiz, Integer idVotacion) {
+        
+    }
     
 }
