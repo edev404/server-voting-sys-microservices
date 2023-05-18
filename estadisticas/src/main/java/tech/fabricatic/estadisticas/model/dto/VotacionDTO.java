@@ -1,4 +1,4 @@
-package tech.edev404.estadisticas.model.dto;
+package tech.fabricatic.estadisticas.model.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;

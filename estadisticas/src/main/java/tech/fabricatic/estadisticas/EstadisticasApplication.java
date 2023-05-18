@@ -1,4 +1,4 @@
-package tech.edev404.estadisticas;
+package tech.fabricatic.estadisticas;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package tech.edev404.estadisticas.model;
+package tech.fabricatic.estadisticas.model;
 
 import java.util.List;
 import java.util.Map;
@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tech.edev404.estadisticas.model.dto.CandidatoDTO;
-import tech.edev404.estadisticas.model.dto.VotacionDTO;
+import tech.fabricatic.estadisticas.model.dto.CandidatoDTO;
+import tech.fabricatic.estadisticas.model.dto.VotacionDTO;
 
 @Data
 @Builder

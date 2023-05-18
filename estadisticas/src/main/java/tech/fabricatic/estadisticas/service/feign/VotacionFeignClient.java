@@ -1,4 +1,4 @@
-package tech.edev404.estadisticas.service.feign;
+package tech.fabricatic.estadisticas.service.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;

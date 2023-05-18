@@ -1,4 +1,4 @@
-package tech.edev404.estadisticas.model.dto;
+package tech.fabricatic.estadisticas.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

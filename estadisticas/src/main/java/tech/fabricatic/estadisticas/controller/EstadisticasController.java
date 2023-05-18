@@ -1,4 +1,4 @@
-package tech.edev404.estadisticas.controller;
+package tech.fabricatic.estadisticas.controller;
 
 import java.util.function.Predicate;
 
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import lombok.RequiredArgsConstructor;
-import tech.edev404.estadisticas.model.Estadistica;
-import tech.edev404.estadisticas.model.dto.VotacionDTO;
-import tech.edev404.estadisticas.service.EstadisticasService;
-import tech.edev404.estadisticas.service.feign.VotacionFeignClient;
+import tech.fabricatic.estadisticas.model.Estadistica;
+import tech.fabricatic.estadisticas.model.dto.VotacionDTO;
+import tech.fabricatic.estadisticas.service.EstadisticasService;
+import tech.fabricatic.estadisticas.service.feign.VotacionFeignClient;
 
 @Validated
 @RestController
