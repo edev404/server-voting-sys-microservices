@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tech.fabricatic.votaciones.votaciones.model.entity.Votacion;
 
 @Data
 @Builder
@@ -31,11 +32,11 @@ public class Voto {
     @Column(nullable = false,  name = "idCandidato")
     private Integer candidato;
 
-    @Column(nullable = false, name = "idAprendiz")
-    private String aprendiz;
+    @Column(nullable = false, name = "idUsuario")
+    private Integer usuario;
 
     @Column(nullable = false,  name = "idVotacion")
-    private Integer votacion;
+    private Votacion votacion;
 
     @CreationTimestamp
     private LocalDateTime fechaRegistro;
