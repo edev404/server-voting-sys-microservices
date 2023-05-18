@@ -30,11 +30,6 @@ public class VotosController {
             @PathVariable("idUsuario") String idUsuario,
             @RequestParam("idVotacion") Integer idVotacion) throws EntityNotFoundException {
 
-        // if (!aprendizAlreadyExist.test(idAprendiz) && !candidatoAlreadyExist.test(idCandidato)
-        //         && !votacionesAlreadyExist.test(idVotacion)) {
-        //     throw new EntityNotFoundException("message");
-        // }
-
         votosService.registerVote(idCandidato, idUsuario, idVotacion);
         return ResponseEntity.status(HttpStatus.OK).build();
 
