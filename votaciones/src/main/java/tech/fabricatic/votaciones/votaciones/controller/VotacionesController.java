@@ -146,6 +146,11 @@ public class VotacionesController {
         return ResponseEntity.status(HttpStatus.OK).body(votacionesService.alreadyExist(idVotacion));
     }
 
+    @GetMapping("working")
+    public ResponseEntity<String> handleServiceIsWorking(){
+        return ResponseEntity.status(HttpStatus.OK).body("Service is working");
+    }
+
     @InitBinder
     public void stringBinder(WebDataBinder webDataBinder) {
         webDataBinder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
