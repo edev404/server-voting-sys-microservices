@@ -12,6 +12,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,15 +32,22 @@ public class Votacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     private String nombre;
 
-    @Column(length = 250)
+    @Column(length = 250, nullable = false)
     private String descripcion;
 
     @Enumerated(EnumType.STRING)
     private EstadoVotacion estado;
 
+    private Integer centro;
+
+    @Lob
+    @Column(nullable = false)
+    private String detalleVotacion;
+
+    @Column(nullable = false)
     private Boolean currentVotacion;
     
     @CreationTimestamp
