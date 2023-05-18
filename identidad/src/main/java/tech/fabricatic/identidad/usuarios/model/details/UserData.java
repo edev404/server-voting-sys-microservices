@@ -6,7 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import tech.fabricatic.identidad.usuarios.model.Usuario;
+import tech.fabricatic.identidad.usuarios.model.entity.Usuario;
 
 public class UserData {
 
