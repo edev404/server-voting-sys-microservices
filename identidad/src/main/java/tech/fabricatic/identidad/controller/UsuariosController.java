@@ -1,23 +1,33 @@
 package tech.fabricatic.identidad.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
+import tech.fabricatic.identidad.service.feign.VotacionesFeignClient;
 
 @Validated
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/usuarios")
 public class UsuariosController {
+
+    private final VotacionesFeignClient votacionesFeignClient;
     
-    @GetMapping("working")
-    public ResponseEntity<String> handleServiceIsWorking(){
-        return ResponseEntity.status(HttpStatus.OK).body("Service is working");
+
+    @GetMapping("feign-working")
+    public String feignWorking(){
+        return votacionesFeignClient.feignWorking();
+    }
+
+    @GetMapping("hello-world")
+    public String helloWorld(){
+        System.out.println("feign request :)");
+        return "hello from identidad microservice";
     }
 
 }

@@ -19,5 +19,6 @@ public class VotacionDTO {
     @NotEmpty
     private String estado;
     private Boolean current;
+    private String centro;
     
 }

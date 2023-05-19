@@ -18,13 +18,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="centro", indexes = @Index(name="centro_unique", columnList = "", unique = true))
+@Table(name="centro")
 public class Centro {
 
     @Id
-    private Long id;
+    private String id;
 
-    @OneToMany(mappedBy = "idCentro", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "centro", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Usuario> usuarios;
     
 }

@@ -38,8 +38,8 @@ public class VotacionesService {
         votacionesRepository.delete(votacion);
     }
 
-    public Page<Votacion> getVotacionesPaginate(Pageable paging) {
-        return votacionesRepository.findAll(paging);
+    public Page<Votacion> getVotacionesPaginate(Pageable paging, Example<Votacion> example) {
+        return votacionesRepository.findAll(example, paging);
     }
 
     public Page<Votacion> getVotacionesPaginateByExample(Pageable paging, Example<Votacion> example) {
@@ -50,9 +50,9 @@ public class VotacionesService {
         return votacionesRepository.findById(idVotacion);
     }
 
-    public void disableVotacionById(Integer idVotacion) {
-        if(isThisCurrentVotacion(idVotacion)){
-            setNotCurrentVotacion(idVotacion);
+    public void disableVotacionById(Integer idVotacion, String idCentro) {
+        if(isThisCurrentVotacion(idVotacion, idCentro)){
+            setNotCurrentVotacion(idVotacion, idCentro);
         }
         votacionesRepository.disableVotacionById(idVotacion);
     }
@@ -61,16 +61,14 @@ public class VotacionesService {
         votacionesRepository.enableVotacionById(idVotacion);
     }
 
-    public List<Votacion> getVotacionesByEstado(EstadoVotacion estado) {
-        return votacionesRepository.findAll()
-                .stream()
-                .filter(votacion -> votacion.getEstado().equals(estado))
-                .toList();
+    public List<Votacion> getVotacionesByEstado(EstadoVotacion estado, String idCentro) {
+        Example<Votacion> example = Example.of(Votacion.builder().estado(estado).centro(idCentro).build());
+        return votacionesRepository.findAll(example);
     }
 
     public Boolean alreadyExist(VotacionDTO votacionDTO) {
-        return votacionesRepository.findByNombreAndDescripcion(votacionDTO.getNombre(), votacionDTO.getDescripcion())
-                .isPresent();
+        Example<Votacion> example = Example.of(Votacion.builder().nombre(votacionDTO.getNombre()).centro(votacionDTO.getCentro()).build());
+        return votacionesRepository.exists(example);
     }
 
     public Boolean alreadyExist(Integer idVotacion) {
@@ -85,40 +83,41 @@ public class VotacionesService {
         return votacionesRepository.findById(idVotacion).get().getEstado().equals(EstadoVotacion.HABILITADA);
     }
 
-    public Optional<Votacion> getCurrentVotacion() {
-        return votacionesRepository.findByCurrentVotacion(true);
+    public Optional<Votacion> getCurrentVotacion(String idCentro) {
+        Example<Votacion> example = Example.of(Votacion.builder().currentVotacion(true).centro(idCentro).build());
+        return votacionesRepository.findOne(example);
     }
 
-    public void setCurrentVotacion(Integer idVotacion) {
-        if (isAnyCurrentSelected()) {
-            Optional<Votacion> currentOptional = votacionesRepository.findByCurrentVotacion(true);
-            if (currentOptional.isPresent()) {
-                votacionesRepository.setNotCurrentById(currentOptional.get().getId());
+    public void setCurrentVotacion(Integer idVotacion, String idCentro) {
+        Optional<Votacion> current = getCurrentVotacion(idCentro);
+        if (current.isPresent()) {
+            if (!current.get().getId().equals(idVotacion)) {
+                votacionesRepository.setNotCurrentById(current.get().getId());
+            } else {
+                return;
             }
         }
         votacionesRepository.setCurrentById(idVotacion);
     }
 
-    public Boolean isAnyCurrentSelected() {
-        return votacionesRepository.findByCurrentVotacion(true).isPresent();
+    public Boolean isAnyCurrentSelected(String idCentro) {
+        Example<Votacion> example = Example.of(Votacion.builder().currentVotacion(true).centro(idCentro).build());
+        return votacionesRepository.exists(example);
     }
 
-    public Boolean isThisCurrentVotacion(Integer idVotacion) {
-        Optional<Votacion> optional = votacionesRepository.findByCurrentVotacion(true);
-        if (optional.isPresent()) {
-            return optional.get().getId() == idVotacion;
-        }
-        return false;
+    public Boolean isThisCurrentVotacion(Integer idVotacion, String idCentro) {
+        Example<Votacion> example = Example.of(Votacion.builder().id(idVotacion).currentVotacion(true).build());
+        return votacionesRepository.exists(example);
     }
 
-    public void setNotCurrentVotacion(Integer idVotacion) {
-        if (isThisCurrentVotacion(idVotacion)) {
+    public void setNotCurrentVotacion(Integer idVotacion, String idCentro) {
+        if (isThisCurrentVotacion(idVotacion, idCentro)) {
             votacionesRepository.setNotCurrentById(idVotacion);
         }
     }
 
-    public Optional<Integer> getCurrentVotacionId() {
-        Optional<Votacion> optional = getCurrentVotacion();
+    public Optional<Integer> getCurrentVotacionId(String idCentro) {
+        Optional<Votacion> optional = getCurrentVotacion(idCentro);
         Integer idVotacion = optional.isPresent() ? optional.get().getId() : null;
         return Optional.ofNullable(idVotacion);
     }

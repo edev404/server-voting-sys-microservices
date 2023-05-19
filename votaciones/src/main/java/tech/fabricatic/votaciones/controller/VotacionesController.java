@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -31,9 +32,12 @@ import tech.fabricatic.votaciones.service.VotacionesService;
 
 @Validated
 @RestController
+@CrossOrigin("*")
 @RequiredArgsConstructor
 @RequestMapping("api/v1/votaciones")
 public class VotacionesController {
+
+    //Estudiar como funciona planteamiento OAuth2 para obtener autentication y luego multi-tenant
 
     private final VotacionesService votacionesService;
     private final VotacionMapper votacionMapper;
@@ -41,13 +45,12 @@ public class VotacionesController {
     @GetMapping
     public ResponseEntity<Page<VotacionDTO>> handleGetVotaciones(
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "6") Integer size) {
+            @RequestParam(defaultValue = "6") Integer size,
+            @PathVariable String idCentro) {
 
         Pageable paging = PageRequest.of(page, size);
-        Page<Votacion> votaciones = votacionesService.getVotacionesPaginate(paging);
-        if (votaciones.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
+        Example<Votacion> example = Example.of(Votacion.builder().centro(idCentro).build());
+        Page<Votacion> votaciones = votacionesService.getVotacionesPaginate(paging, example);
         Page<VotacionDTO> votacionesDTO = new PageImpl<VotacionDTO>(
                 votaciones.map(votacionMapper::pojoToDto).toList());
         return ResponseEntity.status(HttpStatus.OK).body(votacionesDTO);
@@ -58,7 +61,6 @@ public class VotacionesController {
             @RequestBody VotacionDTO exampleDTO,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "6") Integer size) {
-
         Example<Votacion> example = Example.of(votacionMapper.dtoToPojo(exampleDTO));
         Pageable paging = PageRequest.of(page, size);
         Page<Votacion> votaciones = votacionesService.getVotacionesPaginateByExample(paging, example);
@@ -70,17 +72,17 @@ public class VotacionesController {
         return ResponseEntity.status(HttpStatus.OK).body(votacionesDTO);
     }
 
-    @PutMapping("current/{id}")
-    public ResponseEntity<VotacionDTO> handleSetCurrentVotacion(@PathVariable Integer id)
+    @PutMapping("{idCentro}/current/{idVotacion}")
+    public ResponseEntity<VotacionDTO> handleSetCurrentVotacion(@PathVariable Integer idVotacion, @PathVariable String idCentro)
             throws EntityNotFoundException {
-        if (!votacionesService.alreadyExist(id)) {
+        if (!votacionesService.alreadyExist(idVotacion)) {
             throw new EntityNotFoundException("VOTACION not found. Can not be setted current");
         }
-        if (votacionesService.isDisabled(id)) {
+        if (votacionesService.isDisabled(idVotacion)) {
             throw new IllegalStateException("VOTACION is not enabled. Can not be current");
         }
-        votacionesService.setCurrentVotacion(id);
-        VotacionDTO votacionDTO = votacionMapper.pojoToDto(votacionesService.getCurrentVotacion().get());
+        votacionesService.setCurrentVotacion(idVotacion, idCentro);
+        VotacionDTO votacionDTO = votacionMapper.pojoToDto(votacionesService.getCurrentVotacion(idCentro).get());
         return ResponseEntity.status(HttpStatus.OK).body(votacionDTO);
     }
 
@@ -95,8 +97,8 @@ public class VotacionesController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> handleDeleteVotacion(@PathVariable("id") Integer idVotacion)
+    @DeleteMapping("{idCentro}/{idVotacion}")
+    public ResponseEntity<HttpStatus> handleDeleteVotacion(@PathVariable Integer idVotacion)
             throws EntityNotFoundException {
         if (!votacionesService.alreadyExist(idVotacion)) {
             throw new EntityNotFoundException("VOTACION not found. Can not be deleted");
@@ -116,19 +118,19 @@ public class VotacionesController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/disable/{id}")
-    public ResponseEntity<HttpStatus> handleDisableVotacion(@PathVariable("id") Integer idVotacion)
+    @PatchMapping("{idCentro}/disable/{id}")
+    public ResponseEntity<HttpStatus> handleDisableVotacion(@PathVariable("id") Integer idVotacion, @PathVariable String idCentro)
             throws EntityNotFoundException, IllegalStateException {
         if (!votacionesService.alreadyExist(idVotacion)) {
             throw new EntityNotFoundException("VOTACION not found. Can not be disabled");
         } else if (votacionesService.isDisabled(idVotacion)) {
             throw new IllegalStateException("VOTACION already disabled. Do not request disable");
         }
-        votacionesService.disableVotacionById(idVotacion);
+        votacionesService.disableVotacionById(idVotacion, idCentro);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping("/enable/{id}")
+    @PatchMapping("{idCentro}/enable/{id}")
     public ResponseEntity<HttpStatus> handleEnableVotacion(@PathVariable("id") Integer idVotacion)
             throws EntityNotFoundException, IllegalStateException {
         if (!votacionesService.alreadyExist(idVotacion)) {
@@ -141,7 +143,7 @@ public class VotacionesController {
     }
 
     //Feign client use case
-    @GetMapping("/exist-by-id")
+    @GetMapping("{idCentro}/exist-by-id")
     public ResponseEntity<Boolean> handleVotacionExistById(@RequestBody Integer idVotacion){
         return ResponseEntity.status(HttpStatus.OK).body(votacionesService.alreadyExist(idVotacion));
     }

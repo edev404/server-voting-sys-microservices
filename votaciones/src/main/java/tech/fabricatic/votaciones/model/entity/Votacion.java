@@ -43,7 +43,7 @@ public class Votacion {
     private EstadoVotacion estado;
 
     @Column(nullable = false, name = "idCentro")
-    private Integer centro;
+    private String centro;
 
     @Lob
     @Column(nullable = false)

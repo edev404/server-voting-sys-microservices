@@ -29,8 +29,8 @@ public interface VotacionesRepository extends JpaRepository<Votacion, Integer> {
     @Query(value="UPDATE votaciones c SET c.currentVotacion = False WHERE c.id= :idVotacion" , nativeQuery = true)
     void setNotCurrentById(Integer idVotacion);
 
-    Optional<Votacion> findByNombreAndDescripcion(String nombre, String descripcion);
+    Optional<Votacion> findByNombreAndDescripcionAndCentro(String nombre, String descripcion, String idCentro);
 
-    Optional<Votacion> findByCurrentVotacion(boolean currentVotacion);
+    Optional<Votacion> findByCurrentVotacionAndCentro(boolean currentVotacion, String idCentro);
 
 }
