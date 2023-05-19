@@ -51,7 +51,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>edev404/${project.artifactId}</name>
+						<name>fabricatic/${project.artifactId}</name>
 					</image>
 				</configuration>
 			</plugin>
